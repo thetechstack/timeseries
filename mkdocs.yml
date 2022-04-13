@@ -1,0 +1,14 @@
+site_name: 时间序列分析中文网
+theme:
+  name: material
+  font:
+    text: Ubuntu
+    code: Source Code Pro
+  language: zh
+  features:
+    - navigation.tabs
+
+nav:
+  - 首页: index.md
+  - 基本概念:
+      - 平稳性: concepts/stationary.md
