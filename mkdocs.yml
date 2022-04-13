@@ -1,4 +1,10 @@
 site_name: 时间序列分析中文网
+site_url: https://www.heapoverflow.cn/timeseries/
+site_description: 时间序列预测，时间序列异常检测
+
+repo_url: https://github.com/thetechstack/timeseries
+edit_uri: edit/main/docs
+
 theme:
   name: material
   font:
