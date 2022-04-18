@@ -56,6 +56,8 @@ markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
 
+copyright: Copyright &copy; 2022 <a href="https://www.heapoverflow.cn" target="_blank">面向问题编程</a>
+
 extra_javascript:
   - javascripts/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
@@ -66,4 +68,5 @@ nav:
   - 首页: index.md
   - 基本概念:
     - 预测的统计学观点: concepts/statistical-perspective.md
+    - 趋势性、季节性和周期性: concepts/pattern.md
     - 平稳性: concepts/stationary.md
