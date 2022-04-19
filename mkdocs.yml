@@ -69,4 +69,7 @@ nav:
   - 基本概念:
     - 预测的统计学观点: concepts/statistical-perspective.md
     - 趋势性、季节性和周期性: concepts/pattern.md
+    - 协方差: concepts/covariance.md
     - 平稳性: concepts/stationary.md
+    - 自相关: concepts/autocorelation.md
+
