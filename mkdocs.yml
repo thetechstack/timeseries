@@ -72,4 +72,6 @@ nav:
     - 协方差: concepts/covariance.md
     - 平稳性: concepts/stationary.md
     - 自相关: concepts/autocorelation.md
-
+  - 时间序列分解:
+    - 时间序列分解概述: decomposition/index.md
+    - 经典时间序列分解: decomposition/classic.md
