@@ -75,3 +75,5 @@ nav:
   - 时间序列分解:
     - 时间序列分解概述: decomposition/index.md
     - 经典时间序列分解: decomposition/classic.md
+  - 时间序列预测:
+    - 时间序列预测概述: forecast/index.md
