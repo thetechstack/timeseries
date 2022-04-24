@@ -77,3 +77,4 @@ nav:
     - 经典时间序列分解: decomposition/classic.md
   - 时间序列预测:
     - 时间序列预测概述: forecast/index.md
+    - 简单的预测方法: forecast/simple.md
