@@ -1,0 +1,835 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="时间序列预测，时间序列异常检测">
+      
+      
+      
+        <link rel="canonical" href="https://www.heapoverflow.cn/timeseries/forecast/simple/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.11">
+    
+    
+      
+        <title>简单的预测方法 - 时间序列分析中文网</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c5ef100.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.9647289d.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Ubuntu";--md-code-font:"Source Code Pro"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="时间序列分析中文网" class="md-header__button md-logo" aria-label="时间序列分析中文网" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            时间序列分析中文网
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              简单的预测方法
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/thetechstack/timeseries" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      首页
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../concepts/statistical-perspective/" class="md-tabs__link">
+        基本概念
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../decomposition/" class="md-tabs__link">
+        时间序列分解
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../" class="md-tabs__link md-tabs__link--active">
+        时间序列预测
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="时间序列分析中文网" class="md-nav__button md-logo" aria-label="时间序列分析中文网" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    时间序列分析中文网
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/thetechstack/timeseries" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        首页
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          基本概念
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="基本概念" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          基本概念
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/statistical-perspective/" class="md-nav__link">
+        预测的统计学观点
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/pattern/" class="md-nav__link">
+        趋势性、季节性和周期性
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/covariance/" class="md-nav__link">
+        协方差
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/stationary/" class="md-nav__link">
+        平稳性
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/autocorelation/" class="md-nav__link">
+        自相关
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          时间序列分解
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="时间序列分解" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          时间序列分解
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decomposition/" class="md-nav__link">
+        时间序列分解概述
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decomposition/classic/" class="md-nav__link">
+        经典时间序列分解
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          时间序列预测
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="时间序列预测" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          时间序列预测
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        时间序列预测概述
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          简单的预测方法
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        简单的预测方法
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    均值法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naive" class="md-nav__link">
+    Naïve 方法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    趋势法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python" class="md-nav__link">
+    Python示例
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naive_1" class="md-nav__link">
+    季节性 Naïve 方法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    参考链接
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp-smoothing/" class="md-nav__link">
+        指数平滑
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    均值法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naive" class="md-nav__link">
+    Naïve 方法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    趋势法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python" class="md-nav__link">
+    Python示例
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naive_1" class="md-nav__link">
+    季节性 Naïve 方法
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    参考链接
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+  <a href="https://github.com/thetechstack/timeseries/edit/main/docs/forecast/simple.md" title="编辑此页" class="md-content__button md-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+
+<h1 id="_1">简单的预测方法<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h2 id="_2">均值法<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>所有未来值的预测值等于历史数据的平均值。我们把历史数据记作<span class="arithmatex">\(y_{1},\dots,y_{T}\)</span>, 预测值就可以表示为：</p>
+<div class="arithmatex">\[\hat{y}_{T+h|T} = \bar{y} = (y_{1}+\dots+y_{T})/T\]</div>
+<p><span class="arithmatex">\(\hat{y}_{T+h|T}\)</span>代表基于<span class="arithmatex">\(y_{1},\dots,y_{T}\)</span>对<span class="arithmatex">\(y_{T+h}\)</span>的估计值。</p>
+<h2 id="naive">Naïve 方法<a class="headerlink" href="#naive" title="Permanent link">&para;</a></h2>
+<p>在 naïve 预测方法中，我们简单地将所有预测值设为最后一次的观测值，即：</p>
+<p><span class="arithmatex">\(\hat{y}_{T+h|T} = y_{T}\)</span></p>
+<p><strong>这种方法在很多经济和金融时间序列预测中表现得非常好</strong>。</p>
+<p>当数据服从随机游动过程( <span class="arithmatex">\(y_t = y_{t-1} + \varepsilon_t\)</span> )时 Naïve 预测是最优的。</p>
+<h2 id="_3">趋势法<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>相对于 Naïve 方法，趋势法（漂移法）允许预测值随着时间的推移增大或减小，并且我们假定单位时间改变量（称作 “漂移”, Drift）等于历史数据的平均改变量，因此<br />
+<span class="arithmatex">\(T+h\)</span>时刻的预测值可以表示为:</p>
+<div class="arithmatex">\[\hat{y}_{T+h|T} = y_{T} + \frac{h}{T-1}\sum_{t=2}^T (y_{t}-y_{t-1}) = y_{T} + h \left( \frac{y_{T} -y_{1}}{T-1}\right)\]</div>
+<p>这相当于把第一个观测点和最后一个观测点连成一条直线并延伸到未来预测点。</p>
+<h2 id="python">Python示例<a class="headerlink" href="#python" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">def</span> <span class="nf">make_average_prediction</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">return</span> <span class="p">[</span><span class="n">avg</span><span class="p">]</span> <span class="o">*</span> <span class="n">h</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">def</span> <span class="nf">make_naive_prediction</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="k">return</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="n">h</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="k">def</span> <span class="nf">make_drift_prediction</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">h</span><span class="p">):</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="k">return</span> <span class="p">[</span><span class="n">k</span><span class="o">*</span><span class="n">i</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">num_trn</span> <span class="o">=</span> <span class="mi">10</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">num_val</span> <span class="o">=</span> <span class="mi">3</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="k">def</span> <span class="nf">plot_predictions</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_trn</span><span class="p">,</span> <span class="n">num_trn</span><span class="o">+</span><span class="n">num_val</span><span class="p">),</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_trn</span><span class="p">,</span> <span class="n">num_trn</span><span class="o">+</span><span class="n">num_val</span><span class="p">),</span> <span class="n">predictions</span><span class="p">)</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num_trn</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">num_trn</span><span class="p">)</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_trn</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_trn</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="n">plot_predictions</span><span class="p">(</span><span class="n">make_average_prediction</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">num_val</span><span class="p">),</span><span class="s1">&#39;average&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="n">plot_predictions</span><span class="p">(</span><span class="n">make_naive_prediction</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">num_val</span><span class="p">),</span><span class="s1">&#39;naive&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">plot_predictions</span><span class="p">(</span><span class="n">make_drift_prediction</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">num_val</span><span class="p">),</span><span class="s1">&#39;drift&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="简单的时间序列预测方法" src="data:image/png;base64,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" /></p>
+<h2 id="naive_1">季节性 Naïve 方法<a class="headerlink" href="#naive_1" title="Permanent link">&para;</a></h2>
+<p>季节性 Naïve 方法与 Naïve 方法类似，它适用于季节性变化剧烈的数据。我们将每个预测值设为同一季节的前一期观测值（例如：去年的同一个月）。那么， <span class="arithmatex">\(T+h\)</span>
+时刻的预测值可以记作：</p>
+<div class="arithmatex">\[\hat{y}_{T+h|T} = y_{T+h-km}\]</div>
+<p>等式中 <span class="arithmatex">\(m\)</span>为周期长度，<span class="arithmatex">\(k\)</span>是<span class="arithmatex">\((h-1)/m\)</span>的整数部分</p>
+<h2 id="_4">参考链接<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://otexts.com/fppcn/simple-methods.html" target="_blank">一些简单的预测方法 - 预测： 方法与实践</a></li>
+</ul>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="../" class="md-footer__link md-footer__link--prev" aria-label="上一页: 时间序列预测概述" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              时间序列预测概述
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../exp-smoothing/" class="md-footer__link md-footer__link--next" aria-label="下一页: 指数平滑" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              指数平滑
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2022 <a href="https://www.heapoverflow.cn" target="_blank">面向问题编程</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.748e2769.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
