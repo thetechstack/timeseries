@@ -78,3 +78,4 @@ nav:
   - 时间序列预测:
     - 时间序列预测概述: forecast/index.md
     - 简单的预测方法: forecast/simple.md
+    - 指数平滑: forecast/exp-smoothing.md
